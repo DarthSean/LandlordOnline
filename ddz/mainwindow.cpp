@@ -774,31 +774,26 @@ void MainWindow::on_pushButtonChu_clicked()
     }
     auto a = Card::getSet(combo);
     qDebug() << a.first;
+    bool valid = true;
     if(a.first == 0) {
-        QMessageBox::information(this, "提示", "牌组无效");
-        return;
-    }
-    if(forced) {
+        valid = false;
+    } else if(forced) {
         //chupai
     } else {
         if(a.first != 2 && a.first != 5 && a.first != nowCard.first) {
-            QMessageBox::information(this, "提示", "牌组无效");
-            return;
+            valid = false;
         } else {
             if(a.first == 1 || a.first == 3 || a.first == 4 || a.first == 6 || a.first == 7 || a.first == 8 || a.first == 9 || a.first == 10 || a.first == 11 || a.first == 12) {
                 if(a.second <= nowCard.second) {
-                    QMessageBox::information(this, "提示", "牌组无效");
-                    return;
+                    valid = false;
                 }
             } else {
                 if(a.first == 5) {
                     if(nowCard.first == 2) {
-                        QMessageBox::information(this, "提示", "牌组无效");
-                        return;
+                        valid = false;
                     } else if(nowCard.first == 5) {
                         if(a.second <= nowCard.second) {
-                            QMessageBox::information(this, "提示", "牌组无效");
-                            return;
+                            valid = false;
                         } else {
                             //chupai
                         }
@@ -810,12 +805,10 @@ void MainWindow::on_pushButtonChu_clicked()
                 } else {
                     int al = a.second / 15, av = a.second % 15, nl = nowCard.second / 15, nv = nowCard.second % 15;
                     if(al != nl) {
-                        QMessageBox::information(this, "提示", "牌组无效");
-                        return;
+                        valid = false;
                     } else {
                         if(av <= nv) {
-                            QMessageBox::information(this, "提示", "牌组无效");
-                            return;
+                            valid = false;
                         } else {
                             //chupai
                         }
@@ -824,6 +817,14 @@ void MainWindow::on_pushButtonChu_clicked()
             }
         }
     }
+    if(!valid) {
+        QMessageBox::information(this, "提示", "牌组无效");
+        for(int i = 0; i < deck.size(); ++i) {
+            hand[i]->setChecked(false);
+        }
+        return;
+    }
+
     for(int i = 0; i < deck.size(); ++i) {
         hand[i]->hide();
     }
@@ -885,6 +886,9 @@ void MainWindow::on_pushButtonBuyao_clicked()
     ui->groupBoxFire->hide();
     QString card = "card#x";
     card[5] = char(15) + 'a';
+    for(int i = 0; i < deck.size(); ++i) {
+        hand[i]->setChecked(false);
+    }
     if(role != 0) {
         toS(card);
     } else {
