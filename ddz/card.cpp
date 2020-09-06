@@ -120,6 +120,9 @@ QPair<int, int> Card::getSet(QVector<Card>& set) {
                 break;
             }
         }
+        if(set[size - 2].getNum() != set[size - 1].getNum()) {
+            lian = false;
+        }
         if(lian) return qMakePair(14, set[0].getNum() + size / 2 * 15);//lian
     }
     return qMakePair(0, 0);//busted
